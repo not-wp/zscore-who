@@ -377,6 +377,7 @@ document.getElementById('btnCalc').addEventListener('click', function(){
   }
 
   var dias = Math.round((dAval - dNasc) / 86400000);
+  var sexoTab = (sexo === 'm') ? 'b' : 'g';
 
   var idAnos = Math.floor(dias/365.25);
   var restoDias = dias - Math.floor(idAnos*365.25);
@@ -391,7 +392,7 @@ document.getElementById('btnCalc').addEventListener('click', function(){
 
   // Peso/Idade
   if (!isNaN(peso)){
-    var rPI = calcularZ(WHO_TABLES['wfa_'+sexo], dias, peso, true);
+    var rPI = calcularZ(WHO_TABLES['wfa_'+sexoTab], dias, peso, true);
     list.appendChild(linhaResultado('Peso/Idade', null, rPI.z, classificaPesoIdade(rPI.z), rPI.fora));
   }
 
@@ -399,7 +400,7 @@ document.getElementById('btnCalc').addEventListener('click', function(){
   var estaturaEquiv = null;
   if (!isNaN(tamanho)){
     estaturaEquiv = medidaEquivalente(tamanho, posicao, usaComprimento);
-    var rEI = calcularZ(WHO_TABLES['lhfa_'+sexo], dias, estaturaEquiv, false);
+    var rEI = calcularZ(WHO_TABLES['lhfa_'+sexoTab], dias, estaturaEquiv, false);
     list.appendChild(linhaResultado('Estatura/Idade',
       usaComprimento ? 'comprimento (deitado)' : 'estatura (em pé)',
       rEI.z, classificaEstaturaIdade(rEI.z), rEI.fora));
@@ -409,14 +410,14 @@ document.getElementById('btnCalc').addEventListener('click', function(){
   if (!isNaN(peso) && !isNaN(tamanho) && estaturaEquiv){
     var alturaM = estaturaEquiv/100;
     var imc = peso/(alturaM*alturaM);
-    var rIMC = calcularZ(WHO_TABLES['bmifa_'+sexo], dias, imc, true);
+    var rIMC = calcularZ(WHO_TABLES['bmifa_'+sexoTab], dias, imc, true);
     list.appendChild(linhaResultado('IMC/Idade', 'IMC calculado: '+imc.toFixed(2)+' kg/m²',
       rIMC.z, classificaIMCouPeso(rIMC.z), rIMC.fora));
   }
 
   // Peso/Comprimento ou Peso/Estatura
   if (!isNaN(peso) && !isNaN(tamanho)){
-    var tPX = WHO_TABLES[usaComprimento ? ('wfl_'+sexo) : ('wfh_'+sexo)];
+    var tPX = WHO_TABLES[usaComprimento ? ('wfl_'+sexoTab) : ('wfh_'+sexoTab)];
     var xIndex = medidaEquivalente(tamanho, posicao, usaComprimento);
     var rPX = calcularZ(tPX, xIndex, peso, true);
     list.appendChild(linhaResultado(usaComprimento ? 'Peso/Comprimento' : 'Peso/Estatura', null,
@@ -425,13 +426,16 @@ document.getElementById('btnCalc').addEventListener('click', function(){
 
   // Perímetro Cefálico/Idade (opcional)
   if (!isNaN(pc)){
-    var rPC = calcularZ(WHO_TABLES['hcfa_'+sexo], dias, pc, false);
+    var rPC = calcularZ(WHO_TABLES['hcfa_'+sexoTab], dias, pc, false);
     list.appendChild(linhaResultado('Perímetro Cefálico/Idade', null,
       rPC.z, classificaPC(rPC.z), rPC.fora));
   }
 
-  document.getElementById('resultsCard').classList.add('show');
-  document.getElementById('resultsCard').scrollIntoView({behavior:'smooth', block:'start'});
+  var card = document.getElementById('resultsCard');
+  card.classList.add('show');
+  if (typeof card.scrollIntoView === 'function'){
+    card.scrollIntoView({behavior:'smooth', block:'start'});
+  }
 });
 
 // ---------- Registro do Service Worker (PWA) ----------
