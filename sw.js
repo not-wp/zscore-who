@@ -1,4 +1,4 @@
-const CACHE = 'who-zscore-v1';
+const CACHE = 'who-zscore-v4';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', function(e){
@@ -18,6 +18,9 @@ self.addEventListener('activate', function(e){
 });
 
 self.addEventListener('fetch', function(e){
+  // só mexe em requisições http(s) — chrome-extension:// e outros esquemas não são cacheáveis
+  if (!e.request.url.startsWith('http')) return;
+
   e.respondWith(
     caches.match(e.request).then(function(cached){
       return cached || fetch(e.request).then(function(res){
