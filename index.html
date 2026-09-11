@@ -178,7 +178,16 @@ main{
   font-size:11.5px;
   color:var(--ink-soft);
   line-height:1.6;
-  padding:6px 4px 30px;
+  padding:6px 4px 4px;
+}
+.credit{
+  font-size:11px;
+  color:var(--ink-soft);
+  opacity:0.7;
+  text-align:center;
+  letter-spacing:0.3px;
+  padding:0 4px 28px;
+  font-style:italic;
 }
 .err{
   font-size:12.5px;
@@ -193,7 +202,6 @@ main{
 <header>
   <h1>Z-scores WHO</h1>
   <p>Padrões de Crescimento Infantil e Referência de Crescimento OMS · 0 a 19 anos · método LMS oficial.</p>
-  <p>by Bruno Sarzedas</p>
 </header>
 
 <main>
@@ -255,6 +263,7 @@ main{
   <div class="footer-note">
     0–5 anos: WHO Child Growth Standards (2006), tabelas diárias/0,1cm oficiais. 5–19 anos: WHO Reference 2007 (estatura-idade e IMC-idade até 19 anos; peso-idade só até 10 anos, por recomendação da OMS). Peso/comprimento-altura e perímetro cefálico são indicadores exclusivos de 0–5 anos. Cálculo pelo método LMS com os parâmetros oficiais da OMS. Ferramenta de apoio ao estudo — não substitui avaliação clínica.
   </div>
+  <div class="credit">by Bruno Sarzedas</div>
 </main>
 
 <script>
@@ -301,7 +310,7 @@ function calcularZ(tabela, xIndex, xMedida, restrito){
 
 // Limites oficiais de faixa etária (dias)
 var LIMITE_DIAS_COMP_EST = 731;    // 24 meses — troca comprimento -> estatura (0-5a)
-var LIMITE_DIAS_PADRAO_OMS = 1826; // 60 meses — troca WHO Standards (0-5a) -> WHO Reference 2007 (5-19a)
+var LIMITE_DIAS_PADRAO_OMS = 1826; // referência: 60 meses ≈ 1826,25 dias — a troca de faixa agora usa agemons<60 diretamente
 var LIMITE_DIAS_PESO_IDADE = 3652; // 120 meses (10 anos) — limite oficial pra peso-idade
 var LIMITE_DIAS_MAX = 6940;        // ~19 anos — fim da referência OMS 2007
 
@@ -439,7 +448,8 @@ function executarCalculo(){
     'Idade: ' + idAnos + 'a ' + idMeses + 'm (' + dias + ' dias)';
 
   var sexoTab = (sexo === 'm') ? 'b' : 'g';
-  var faixa0a5 = dias < LIMITE_DIAS_PADRAO_OMS;
+  var agemons = dias/30.4375; // idade decimal em meses — usada nas tabelas mensais (5-19a) e pra decidir a faixa
+  var faixa0a5 = agemons < 60;
   var usaComprimento = dias < LIMITE_DIAS_COMP_EST;
 
   // mostra/esconde campos que só fazem sentido em 0-5 anos
@@ -456,7 +466,6 @@ function executarCalculo(){
   list.innerHTML = '';
   var algumResultado = false;
 
-  var agemons = dias/30.4375; // usado só nas tabelas WHO2007 (5-19a), indexadas por mês
 
   // ---------- Peso/Idade ----------
   if (!isNaN(peso)){
