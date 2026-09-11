@@ -25,7 +25,7 @@
   --grid: #eef1ef;
 }
 *{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
+html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%;}
 body{
   background:var(--bg);
   color:var(--ink);
@@ -137,8 +137,12 @@ main{
 .results.show{display:block;}
 .result-row{
   display:grid;
-  grid-template-columns:1fr auto auto;
-  gap:10px;
+  grid-template-columns:1fr auto;
+  grid-template-areas:
+    "name z"
+    "tag  tag";
+  column-gap:10px;
+  row-gap:6px;
   align-items:center;
   padding:12px 0;
   border-bottom:1px solid var(--grid);
@@ -146,20 +150,25 @@ main{
   background-size:100% 100%;
 }
 .result-row:last-child{border-bottom:none;}
-.result-name{font-size:13.5px;color:var(--ink);}
+.result-name{grid-area:name; font-size:13.5px;color:var(--ink); min-width:0;}
 .result-name small{display:block;color:var(--ink-soft);font-size:11.5px;margin-top:1px;}
 .result-z{
+  grid-area:z;
   font-variant-numeric:tabular-nums;
   font-size:17px;
   font-weight:600;
   text-align:right;
-  min-width:64px;
+  white-space:nowrap;
 }
 .result-tag{
+  grid-area:tag;
   font-size:11px;
   padding:4px 8px;
   border-radius:2px;
-  white-space:nowrap;
+  white-space:normal;
+  overflow-wrap:break-word;
+  width:fit-content;
+  max-width:100%;
   border:1px solid transparent;
 }
 .tag-ok{color:#1e5c4f;background:#e7f3ef;border-color:#cfe6dd;}
